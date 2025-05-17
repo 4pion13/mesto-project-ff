@@ -1,10 +1,9 @@
 // @todo: Темплейт карточки
-function cardTempalte(card, id) {
+function cardTempalte(card) {
   const cardTempalte = document.querySelector("#card-template").content;
   const cardElement = cardTempalte
     .querySelector(".places__item")
     .cloneNode(true);
-  cardElement.id = id;
   const deleteCardButton = cardElement.querySelector(".card__delete-button");
   const likeCardButton = cardElement.querySelector(".card__like-button");
   const cardImage = cardElement.querySelector(".card__image");
@@ -29,6 +28,7 @@ function cardTempalte(card, id) {
 }
 
 // @todo: DOM узлы
+const cardList = document.querySelector(".places__list");
 const popupNewCard = document.querySelector(".popup_type_new-card");
 const popupNewCardOpenButton = document.querySelector(".profile__add-button");
 const popupNewCardCloseButton = popupNewCard.querySelector(".popup__close");
@@ -47,17 +47,14 @@ function createCard(form) {
       name: formData.get("place-name"),
       link: formData.get("link"),
     };
-    initialCards.push(data);
-    renderCards(initialCards);
+    cardList.append(cardTempalte(data));
     form.reset();
   });
 }
 
 // @todo: Функция удаления карточки
 function deleteCard(card) {
-  initialCards.splice(card.id, 1);
   card.remove(card);
-  renderCards(initialCards);
 }
 
 // Открытие/Закрытие popup
@@ -84,20 +81,12 @@ function appendDataImagePopup(data) {
 // @todo: Вывести карточки на страницу
 
 function renderCards(cardContent) {
-  const cardList = document.querySelector(".places__list");
   function addElementToCardList() {
     cardContent.forEach((element, index) => {
-      cardList.append(cardTempalte(element, index));
+      cardList.append(cardTempalte(element));
     });
   }
-  if (cardList.children.length === 0) {
-    addElementToCardList();
-  } else {
-    while (cardList.firstChild) {
-      cardList.removeChild(cardList.firstChild);
-    }
-    addElementToCardList();
-  }
+  addElementToCardList();
 }
 
 renderCards(initialCards);
