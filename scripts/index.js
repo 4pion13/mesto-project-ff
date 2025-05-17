@@ -57,6 +57,7 @@ function createCard(form) {
 function deleteCard(card) {
   initialCards.splice(card.id, 1);
   card.remove(card);
+  renderCards(initialCards);
 }
 
 // Открытие/Закрытие popup
