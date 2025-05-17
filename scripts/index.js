@@ -1,9 +1,10 @@
 // @todo: Темплейт карточки
-function cardTempalte(card) {
+function cardTempalte(card, id) {
   const cardTempalte = document.querySelector("#card-template").content;
   const cardElement = cardTempalte
     .querySelector(".places__item")
     .cloneNode(true);
+  cardElement.id = id;
   const deleteCardButton = cardElement.querySelector(".card__delete-button");
   const likeCardButton = cardElement.querySelector(".card__like-button");
   const cardImage = cardElement.querySelector(".card__image");
@@ -12,7 +13,7 @@ function cardTempalte(card) {
   cardElement.querySelector(".card__title").textContent = card.name;
 
   deleteCardButton.addEventListener("click", (evt) => {
-    cardDelete(evt.target.parentElement);
+    deleteCard(evt.target.parentElement);
   });
 
   likeCardButton.addEventListener("click", (evt) => {
@@ -53,8 +54,8 @@ function createCard(form) {
 }
 
 // @todo: Функция удаления карточки
-function cardDelete(card) {
-    console.log(card)
+function deleteCard(card) {
+  initialCards.splice(card.id, 1);
   card.remove(card);
 }
 
@@ -72,8 +73,8 @@ function enablePopupToggle(popup, openButton, closeButton, data) {
   });
 }
 
+// Добавление данных в popupImage
 function appendDataImagePopup(data) {
-  console.log(data.image);
   popupImagePhoto.src = data.image;
   popupImagePhoto.alt = data.caption;
   popupImageCaption.textContent = data.caption;
@@ -83,18 +84,18 @@ function appendDataImagePopup(data) {
 
 function renderCards(cardContent) {
   const cardList = document.querySelector(".places__list");
-  function cardListAddElements() {
-    cardContent.forEach((element) => {
-      cardList.append(cardTempalte(element));
+  function addElementToCardList() {
+    cardContent.forEach((element, index) => {
+      cardList.append(cardTempalte(element, index));
     });
   }
   if (cardList.children.length === 0) {
-    cardListAddElements();
+    addElementToCardList();
   } else {
     while (cardList.firstChild) {
       cardList.removeChild(cardList.firstChild);
     }
-    cardListAddElements();
+    addElementToCardList();
   }
 }
 
