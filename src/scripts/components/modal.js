@@ -19,7 +19,6 @@ const popupProfileEditForm = popupProfileEdit.querySelector(".popup__form");
 const popupProfileEditCloseButton =
   popupProfileEdit.querySelector(".popup__close");
 
-
 // Функция открытия/закрытия popup
 function showPopup(popup, show = true) {
   if (show) {
@@ -103,8 +102,6 @@ function appendDataPopup(data, type) {
       popupInputTitle.value = profileTitle.textContent;
       popupInputDescription.value = profileDescription.textContent;
       break;
-    default:
-      console.log("Передан неверный type");
   }
 }
 

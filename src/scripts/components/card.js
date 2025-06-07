@@ -27,7 +27,7 @@ function cardTempalte(card) {
   });
 
   likeCardButton.addEventListener("click", (evt) => {
-    toggleLikeButton(evt);
+    addToggleLikeButton(evt);
   });
 
   enablePopupToggle(
@@ -64,7 +64,7 @@ function deleteCard(card) {
   card.remove(card);
 }
 
-function toggleLikeButton(evt) {
+function addToggleLikeButton(evt) {
   evt.target.classList.toggle("card__like-button_is-active");
 }
 
@@ -79,4 +79,4 @@ function renderCards(cardContent) {
   addElementToCardList();
 }
 
-export { createCard, renderCards, toggleLikeButton, deleteCard };
+export { createCard, renderCards, addToggleLikeButton, deleteCard };
