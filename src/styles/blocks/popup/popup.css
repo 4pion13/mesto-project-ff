@@ -8,6 +8,7 @@
 @import url('./__caption/popup__caption.css');
 @import url('./__image/popup__image.css');
 
+
 .popup {
   font-family: 'Inter', Arial, sans-serif;
   display: none;
@@ -21,3 +22,6 @@
   right: 0;
   z-index: 10;
 }
+
+
+
