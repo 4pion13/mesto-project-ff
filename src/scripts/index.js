@@ -152,7 +152,6 @@ function cardTempalte(card) {
     popupImagePhoto.alt = evt.target.alt;
     popupImageCaption.textContent = evt.target.alt;
   });
-  // closePopupOnOverlayClick(popupImage);
   return cardElement;
 }
 
