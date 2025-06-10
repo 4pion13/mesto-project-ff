@@ -1,7 +1,11 @@
 import "../styles/index.css";
 import { initialCards } from "./cards.js";
 import { openPopup, closePopup } from "./components/modal.js";
-import { deleteCard, addToggleLikeButton } from "./components/card.js";
+import {
+  deleteCard,
+  addToggleLikeButton,
+  formingCardTempalte,
+} from "./components/card.js";
 import profileImage from "../images/avatar.jpg";
 // @todo: DOM узлы
 const cardList = document.querySelector(".places__list");
@@ -72,6 +76,16 @@ function closePopupOnOverlayClick(popup) {
   });
 }
 
+// Обработчик открытия Popup с просмотром изображения
+function openImagePopupEvent(popup) {
+  popup.addEventListener("click", (evt) => {
+    openPopup(popupImage);
+    popupImagePhoto.src = evt.target.src || "";
+    popupImagePhoto.alt = evt.target.alt;
+    popupImageCaption.textContent = evt.target.alt;
+  });
+}
+
 // Функция создания карточки
 function appendNewCardEvent(popup, form) {
   form.addEventListener("submit", (evt) => {
@@ -81,7 +95,7 @@ function appendNewCardEvent(popup, form) {
       name: formData.get("place-name"),
       link: formData.get("link"),
     };
-    cardList.prepend(cardTempalte(data));
+    cardList.prepend(formingCardTempalte(data, openImagePopupEvent));
     form.reset();
     closePopup(popup);
   });
@@ -125,41 +139,11 @@ function addListenerPopup() {
   changingProfileDataEvent(popupProfileEdit, popupProfileEditForm);
 }
 
-// Формирования карточки
-function cardTempalte(card) {
-  const cardTempalte = document.querySelector("#card-template").content;
-  const cardElement = cardTempalte
-    .querySelector(".places__item")
-    .cloneNode(true);
-  const deleteCardButton = cardElement.querySelector(".card__delete-button");
-  const likeCardButton = cardElement.querySelector(".card__like-button");
-  const cardImage = cardElement.querySelector(".card__image");
-  cardElement.querySelector(".card__image").src = card.link;
-  cardElement.querySelector(".card__image").alt = card.name;
-  cardElement.querySelector(".card__title").textContent = card.name;
-
-  deleteCardButton.addEventListener("click", (evt) => {
-    deleteCard(evt.target.parentElement);
-  });
-
-  likeCardButton.addEventListener("click", (evt) => {
-    addToggleLikeButton(evt);
-  });
-
-  cardImage.addEventListener("click", (evt) => {
-    openPopup(popupImage);
-    popupImagePhoto.src = evt.target.src || "";
-    popupImagePhoto.alt = evt.target.alt;
-    popupImageCaption.textContent = evt.target.alt;
-  });
-  return cardElement;
-}
-
 // Вывод карточек на страницу
 function renderCards(cardContent) {
   function addElementToCardList() {
     cardContent.forEach((element) => {
-      cardList.append(cardTempalte(element));
+      cardList.append(formingCardTempalte(element, openImagePopupEvent));
     });
   }
   addElementToCardList();
