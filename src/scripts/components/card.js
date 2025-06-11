@@ -1,7 +1,7 @@
 // Формирования карточки
-function formingCardTempalte(card, openPopupEvent) {
-  const formingCardTempalte = document.querySelector("#card-template").content;
-  const cardElement = formingCardTempalte
+function formingCardTempalate(card, openPopupEvent) {
+  const formingCardTempalate = document.querySelector("#card-template").content;
+  const cardElement = formingCardTempalate
     .querySelector(".places__item")
     .cloneNode(true);
   const deleteCardButton = cardElement.querySelector(".card__delete-button");
@@ -19,7 +19,9 @@ function formingCardTempalte(card, openPopupEvent) {
     addToggleLikeButton(evt);
   });
 
-  openPopupEvent(cardImage);
+  cardImage.addEventListener("click", (evt) => {
+    openPopupEvent(evt);
+  });
   return cardElement;
 }
 
@@ -33,4 +35,4 @@ function addToggleLikeButton(evt) {
   evt.target.classList.toggle("card__like-button_is-active");
 }
 
-export { formingCardTempalte, addToggleLikeButton, deleteCard };
+export { formingCardTempalate, addToggleLikeButton, deleteCard };

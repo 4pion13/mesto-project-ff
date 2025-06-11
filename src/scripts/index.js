@@ -4,7 +4,7 @@ import { openPopup, closePopup } from "./components/modal.js";
 import {
   deleteCard,
   addToggleLikeButton,
-  formingCardTempalte,
+  formingCardTempalate,
 } from "./components/card.js";
 import profileImage from "../images/avatar.jpg";
 // @todo: DOM узлы
@@ -77,13 +77,11 @@ function closePopupOnOverlayClick(popup) {
 }
 
 // Обработчик открытия Popup с просмотром изображения
-function openImagePopupEvent(popup) {
-  popup.addEventListener("click", (evt) => {
-    openPopup(popupImage);
-    popupImagePhoto.src = evt.target.src || "";
-    popupImagePhoto.alt = evt.target.alt;
-    popupImageCaption.textContent = evt.target.alt;
-  });
+function openImagePopupEvent(evt) {
+  openPopup(popupImage);
+  popupImagePhoto.src = evt.target.src || "";
+  popupImagePhoto.alt = evt.target.alt;
+  popupImageCaption.textContent = evt.target.alt;
 }
 
 // Функция создания карточки
@@ -95,7 +93,7 @@ function appendNewCardEvent(popup, form) {
       name: formData.get("place-name"),
       link: formData.get("link"),
     };
-    cardList.prepend(formingCardTempalte(data, openImagePopupEvent));
+    cardList.prepend(formingCardTempalate(data, openImagePopupEvent));
     form.reset();
     closePopup(popup);
   });
@@ -143,7 +141,7 @@ function addListenerPopup() {
 function renderCards(cardContent) {
   function addElementToCardList() {
     cardContent.forEach((element) => {
-      cardList.append(formingCardTempalte(element, openImagePopupEvent));
+      cardList.append(formingCardTempalate(element, openImagePopupEvent));
     });
   }
   addElementToCardList();

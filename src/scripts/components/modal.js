@@ -10,10 +10,9 @@ export function closePopup(popup) {
   document.removeEventListener("keydown", closePopupOnEscape);
 }
 
-
 function closePopupOnEscape(evt) {
-  const popupIsOpened = document.querySelector(".popup_is-opened");
   if (evt.key === "Escape") {
+    const popupIsOpened = document.querySelector(".popup_is-opened");
     closePopup(popupIsOpened);
   }
 }
