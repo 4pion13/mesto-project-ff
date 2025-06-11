@@ -1,7 +1,7 @@
 // Формирования карточки
 function formingCardTemplate(card, openPopupEvent) {
-  const formingCardTemplate = document.querySelector("#card-template").content;
-  const cardElement = formingCardTemplate
+  const сardTemplate = document.querySelector("#card-template").content;
+  const cardElement = сardTemplate
     .querySelector(".places__item")
     .cloneNode(true);
   const deleteCardButton = cardElement.querySelector(".card__delete-button");
