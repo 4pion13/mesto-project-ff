@@ -4,7 +4,7 @@ import { openPopup, closePopup } from "./components/modal.js";
 import {
   deleteCard,
   addToggleLikeButton,
-  formingCardTempalate,
+  formingCardTemplate,
 } from "./components/card.js";
 import profileImage from "../images/avatar.jpg";
 // @todo: DOM узлы
@@ -93,7 +93,7 @@ function appendNewCardEvent(popup, form) {
       name: formData.get("place-name"),
       link: formData.get("link"),
     };
-    cardList.prepend(formingCardTempalate(data, openImagePopupEvent));
+    cardList.prepend(formingCardTemplate(data, openImagePopupEvent));
     form.reset();
     closePopup(popup);
   });
@@ -141,7 +141,7 @@ function addListenerPopup() {
 function renderCards(cardContent) {
   function addElementToCardList() {
     cardContent.forEach((element) => {
-      cardList.append(formingCardTempalate(element, openImagePopupEvent));
+      cardList.append(formingCardTemplate(element, openImagePopupEvent));
     });
   }
   addElementToCardList();
