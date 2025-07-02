@@ -1,5 +1,5 @@
 // Формирования карточки
-function formingCardTemplate(card, openPopupEvent) {
+function formingCardTemplate(card, openPopupEvent, profileId) {
   const сardTemplate = document.querySelector("#card-template").content;
   const cardElement = сardTemplate
     .querySelector(".places__item")
@@ -10,7 +10,15 @@ function formingCardTemplate(card, openPopupEvent) {
   cardElement.querySelector(".card__image").src = card.link;
   cardElement.querySelector(".card__image").alt = card.name;
   cardElement.querySelector(".card__title").textContent = card.name;
+  cardElement.querySelector(".card__like-counter").textContent =
+    card.likes.length > 0 ? card.likes.length : "";
 
+    console.log(card._id, ' - ', profileId)
+  // if (card._id === profileId) {
+  //   deleteCardButton.remove();
+  // } else {
+  //   console.log('Подходит')
+  // }
   deleteCardButton.addEventListener("click", (evt) => {
     deleteCard(evt.target.parentElement);
   });

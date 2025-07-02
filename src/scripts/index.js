@@ -1,12 +1,17 @@
 import "../styles/index.css";
-import { initialCards } from "./cards.js";
 import { openPopup, closePopup } from "./components/modal.js";
 import {
   deleteCard,
   addToggleLikeButton,
   formingCardTemplate,
 } from "./components/card.js";
-import profileImage from "../images/avatar.jpg";
+import { enableValidation, clearValidation } from "./components/validation.js";
+import {
+  getPersonalInformation,
+  getInitialCards,
+  updateProfileData,
+  addCardData,
+} from "./components/api.js";
 // @todo: DOM узлы
 const cardList = document.querySelector(".places__list");
 
@@ -32,16 +37,35 @@ const profile = document.querySelector(".profile");
 const profileTitle = profile.querySelector(".profile__title");
 const profileDescription = profile.querySelector(".profile__description");
 
-profile.querySelector(
-  ".profile__image"
-).style.backgroundImage = `url(${profileImage})`;
 [popupImage, popupNewCard, popupProfileEdit].forEach((element) => {
   element.classList.add("popup_is-animated");
 });
+// Конфиг валидации
+const validationConfig = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+};
+function setProfileImage(imageUrl) {
+  profile.querySelector(
+    ".profile__image"
+  ).style.backgroundImage = `url(${imageUrl})`;
+}
+
+function fillingProfileData(profileData) {
+  profileTitle.textContent = profileData.name;
+  profileDescription.textContent = profileData.about;
+  setProfileImage(profileData.avatar);
+}
+
 // Обработчики событий
 function closePopupEvent(popup, closeButton) {
   closeButton.addEventListener("click", () => {
     closePopup(popup);
+    clearValidation(popupProfileEditForm, validationConfig);
   });
 }
 // Обработчик открытия модального окна (редактирование профиля) по нажатию на кнопку
@@ -72,6 +96,7 @@ function closePopupOnOverlayClick(popup) {
   popup.addEventListener("click", (evt) => {
     if (!popupContent.contains(evt.target)) {
       closePopup(popup);
+      clearValidation(popupProfileEditForm, validationConfig);
     }
   });
 }
@@ -93,7 +118,9 @@ function appendNewCardEvent(popup, form) {
       name: formData.get("place-name"),
       link: formData.get("link"),
     };
-    cardList.prepend(formingCardTemplate(data, openImagePopupEvent));
+    addCardData(data.name, data.link).then((res) => {
+      cardList.prepend(formingCardTemplate(res, openImagePopupEvent));
+    });
     form.reset();
     closePopup(popup);
   });
@@ -108,8 +135,9 @@ function changingProfileDataEvent(popup, form) {
       name: formData.get("name"),
       description: formData.get("description"),
     };
-    profileTitle.textContent = data.name;
-    profileDescription.textContent = data.description;
+    updateProfileData(data.name, data.description).then((updateData) => {
+      fillingProfileData(updateData);
+    });
     form.reset();
     closePopup(popup);
   });
@@ -138,15 +166,24 @@ function addListenerPopup() {
 }
 
 // Вывод карточек на страницу
-function renderCards(cardContent) {
+function renderCards(cardContent, profileData) {
+  console.log(cardContent);
   function addElementToCardList() {
     cardContent.forEach((element) => {
-      cardList.append(formingCardTemplate(element, openImagePopupEvent));
+      cardList.append(formingCardTemplate(element, openImagePopupEvent, profileData._id));
     });
   }
   addElementToCardList();
 }
 
 // start
-renderCards(initialCards);
+Promise.all([getPersonalInformation(), getInitialCards()])
+  .then(([profileData, cards]) => {
+    fillingProfileData(profileData);
+    renderCards(cards, profileData);
+  })
+  .catch((err) => {
+    console.error("Ошибка при получении данных:", err);
+  });
 addListenerPopup();
+enableValidation(validationConfig);
