@@ -1,5 +1,9 @@
 import "../styles/index.css";
-import { openPopup, closePopup } from "./components/modal.js";
+import {
+  openPopup,
+  closePopup,
+  loadingPopupState,
+} from "./components/modal.js";
 import {
   deleteCard,
   addToggleLikeButton,
@@ -11,6 +15,10 @@ import {
   getInitialCards,
   updateProfileData,
   addCardData,
+  deleteCardRequest,
+  addLikeRequest,
+  deleteLikeRequest,
+  updateAvatarRequest,
 } from "./components/api.js";
 // @todo: DOM узлы
 const cardList = document.querySelector(".places__list");
@@ -37,9 +45,17 @@ const profile = document.querySelector(".profile");
 const profileTitle = profile.querySelector(".profile__title");
 const profileDescription = profile.querySelector(".profile__description");
 
-[popupImage, popupNewCard, popupProfileEdit].forEach((element) => {
-  element.classList.add("popup_is-animated");
-});
+const popupAvatarEdit = document.querySelector(".popup_type_edit_avatar");
+const popupAvatarEditOpenButton = profile.querySelector(".profile__image");
+const popupAvatarEditCloseButton =
+  popupAvatarEdit.querySelector(".popup__close");
+const popupAvatarEditForm = popupAvatarEdit.querySelector(".popup__form");
+
+[popupImage, popupNewCard, popupProfileEdit, popupAvatarEdit].forEach(
+  (element) => {
+    element.classList.add("popup_is-animated");
+  }
+);
 // Конфиг валидации
 const validationConfig = {
   formSelector: ".popup__form",
@@ -48,6 +64,12 @@ const validationConfig = {
   inactiveButtonClass: "popup__button_disabled",
   inputErrorClass: "popup__input_type_error",
   errorClass: "popup__error_visible",
+};
+
+const cardConfigRequests = {
+  deleteCardRequest: deleteCardRequest,
+  addLikeRequest: addLikeRequest,
+  deleteLikeRequest: deleteLikeRequest,
 };
 function setProfileImage(imageUrl) {
   profile.querySelector(
@@ -118,11 +140,36 @@ function appendNewCardEvent(popup, form) {
       name: formData.get("place-name"),
       link: formData.get("link"),
     };
+    loadingPopupState(popup, true);
     addCardData(data.name, data.link).then((res) => {
-      cardList.prepend(formingCardTemplate(res, openImagePopupEvent));
+      getPersonalInformation().then((profileData) => {
+        cardList.prepend(
+          formingCardTemplate(
+            res,
+            openImagePopupEvent,
+            profileData._id,
+            cardConfigRequests
+          )
+        );
+        form.reset();
+        closePopup(popup);
+        loadingPopupState(popup, false);
+      });
     });
-    form.reset();
-    closePopup(popup);
+  });
+}
+
+function updateAvatarEvent(popup, form) {
+  form.addEventListener("submit", (evt) => {
+    evt.preventDefault();
+    const formData = new FormData(form);
+    loadingPopupState(popup, true);
+    updateAvatarRequest(formData.get("link")).then((res) => {
+      setProfileImage(res.avatar);
+      form.reset();
+      closePopup(popup);
+      loadingPopupState(popup, false);
+    });
   });
 }
 
@@ -135,11 +182,13 @@ function changingProfileDataEvent(popup, form) {
       name: formData.get("name"),
       description: formData.get("description"),
     };
+    loadingPopupState(popup, true);
     updateProfileData(data.name, data.description).then((updateData) => {
       fillingProfileData(updateData);
+      form.reset();
+      closePopup(popup);
+      loadingPopupState(popup, false);
     });
-    form.reset();
-    closePopup(popup);
   });
 }
 
@@ -148,29 +197,41 @@ function addListenerPopup() {
   closePopupEvent(popupNewCard, popupNewCardCloseButton);
   closePopupEvent(popupProfileEdit, popupProfileEditCloseButton);
   closePopupEvent(popupImage, popupImageCloseButton);
+  closePopupEvent(popupAvatarEdit, popupAvatarEditCloseButton);
 
   //   Обработчики закрытия модальных окон через оверлей
   closePopupOnOverlayClick(popupNewCard);
   closePopupOnOverlayClick(popupProfileEdit);
   closePopupOnOverlayClick(popupImage);
+  closePopupOnOverlayClick(popupAvatarEdit);
 
   // Обработчик открытия модальных окон
   openProfilePopupEditEvent(popupProfileEdit, popupProfileEditOpenButton);
   openPopupOnclickEvent(popupNewCard, popupNewCardOpenButton);
+  openPopupOnclickEvent(popupAvatarEdit, popupAvatarEditOpenButton);
 
   // Обработчик события добавления карточки
   appendNewCardEvent(popupNewCard, popupNewCardForm);
 
   // Обработчик события изменения данных профиля
   changingProfileDataEvent(popupProfileEdit, popupProfileEditForm);
+
+  // Обработчик события изменения картинки профиля
+  updateAvatarEvent(popupAvatarEdit, popupAvatarEditForm);
 }
 
 // Вывод карточек на страницу
 function renderCards(cardContent, profileData) {
-  console.log(cardContent);
   function addElementToCardList() {
     cardContent.forEach((element) => {
-      cardList.append(formingCardTemplate(element, openImagePopupEvent, profileData._id));
+      cardList.append(
+        formingCardTemplate(
+          element,
+          openImagePopupEvent,
+          profileData._id,
+          cardConfigRequests
+        )
+      );
     });
   }
   addElementToCardList();
