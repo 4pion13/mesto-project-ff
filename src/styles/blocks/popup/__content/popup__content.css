@@ -10,6 +10,10 @@
   cursor: default;
 }
 
+.popup__content_min-height_auto {
+  min-height: auto;
+}
+
 @media screen and (max-width: 568px) {
   .popup__content {
     width: 100%;

@@ -47,7 +47,6 @@ const setEventListeners = (formElement, validationConfig) => {
   );
   inputList.forEach((inputElement) => {
     inputElement.addEventListener("input", function () {
-      console.log("Слушатель добавлен");
       checkInputValidity(formElement, inputElement, validationConfig);
       toggleButtonState(inputList, buttonElement, validationConfig);
     });
@@ -78,14 +77,11 @@ const clearValidation = (form, validationConfig) => {
 };
 
 const enableValidation = (validationConfig) => {
-  console.log("Запуск валидации");
-  console.log(validationConfig);
   const formList = Array.from(
     document.querySelectorAll(validationConfig.formSelector)
   );
   formList.forEach((formElement) => {
     setEventListeners(formElement, validationConfig);
-    console.log("Выполнен");
   });
 };
 
