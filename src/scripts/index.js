@@ -141,28 +141,32 @@ function appendNewCardEvent(popup, form) {
       link: formData.get("link"),
     };
     loadingPopupState(popup, true);
-    addCardData(data.name, data.link).then((res) => {
-      getPersonalInformation()
-        .then((profileData) => {
-          cardList.prepend(
-            formingCardTemplate(
-              res,
-              openImagePopupEvent,
-              profileData._id,
-              cardConfigRequests
-            )
-          );
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          form.reset();
-          loadingPopupState(popup, false);
-          disabledPopupButton(popup, validationConfig);
-          closePopup(popup);
-        });
-    });
+    addCardData(data.name, data.link)
+      .then((res) => {
+        getPersonalInformation()
+          .then((profileData) => {
+            cardList.prepend(
+              formingCardTemplate(
+                res,
+                openImagePopupEvent,
+                profileData._id,
+                cardConfigRequests
+              )
+            );
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+          .finally(() => {
+            form.reset();
+            loadingPopupState(popup, false);
+            disabledPopupButton(popup, validationConfig);
+            closePopup(popup);
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 }
 
