@@ -27,7 +27,7 @@ function formingCardTemplate(
     if (card._id === profileId) {
       likeCardButton.classList.add("card__like-button_is-active");
     }
-  })
+  });
 
   deleteCardButton.addEventListener("click", (evt) => {
     deleteCard(
@@ -38,12 +38,15 @@ function formingCardTemplate(
   });
 
   likeCardButton.addEventListener("click", (evt) => {
-    addToggleLikeButton(evt, card, profileId, cardConfigRequests).then(
-      (res) => {
+    addToggleLikeButton(card, profileId, cardConfigRequests)
+      .then((res) => {
+        evt.target.classList.toggle("card__like-button_is-active");
         card.likes = res.likes;
         setCardCounter(cardCounter, card);
-      }
-    );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 
   cardImage.addEventListener("click", (evt) => {
@@ -58,25 +61,26 @@ function setCardCounter(cardCounter, card) {
 
 // Функция удаления карточки
 function deleteCard(card, deleteCardRequest, cardId) {
-  deleteCardRequest(cardId).then((res) => {
-    card.remove(card);
-  });
+  deleteCardRequest(cardId)
+    .then((res) => {
+      card.remove(card);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
-
 // Функция переключателя лайка
-function addToggleLikeButton(evt, card, profileId, cardConfigRequests) {
+function addToggleLikeButton(card, profileId, cardConfigRequests) {
   const cardLikesListId = [];
   card.likes.map((like) => {
     cardLikesListId.push(like._id);
   });
   if (cardLikesListId.includes(profileId)) {
-    evt.target.classList.remove("card__like-button_is-active");
     return cardConfigRequests.deleteLikeRequest(card._id).then((res) => {
       return res;
-    })
+    });
   } else {
-    evt.target.classList.add("card__like-button_is-active");
     return cardConfigRequests.addLikeRequest(card._id).then((res) => {
       return res;
     });

@@ -12,11 +12,16 @@ export function closePopup(popup) {
 
 export function loadingPopupState(popup, state) {
   if (state) {
-    popup.querySelector(".popup__button").textContent = 'Сохранение...';
+    popup.querySelector(".popup__button").textContent = "Сохранение...";
   } else {
-    popup.querySelector(".popup__button").textContent = 'Сохранить';
+    popup.querySelector(".popup__button").textContent = "Сохранить";
   }
-  
+}
+
+export function disabledPopupButton(popup, validationConfig) {
+  const buttonElement = popup.querySelector(".popup__button");
+  buttonElement.classList.add(validationConfig.inactiveButtonClass);
+  buttonElement.disabled = true;
 }
 
 function closePopupOnEscape(evt) {

@@ -19,9 +19,6 @@ export const getInitialCards = () => {
     .then((result) => {
       return result;
     })
-    .catch((err) => {
-      console.log(err);
-    });
 };
 
 export const getPersonalInformation = () => {
@@ -37,9 +34,6 @@ export const getPersonalInformation = () => {
     .then((result) => {
       return result;
     })
-    .catch((err) => {
-      console.log(err);
-    });
 };
 
 export const updateProfileData = (name, about) => {
@@ -60,9 +54,6 @@ export const updateProfileData = (name, about) => {
     .then((result) => {
       return result;
     })
-    .catch((err) => {
-      console.log(err);
-    });
 };
 
 export const deleteCardRequest = (cardId) => {
@@ -79,9 +70,6 @@ export const deleteCardRequest = (cardId) => {
     .then((result) => {
       return result;
     })
-    .catch((err) => {
-      console.log(err);
-    });
 };
 
 export const addLikeRequest = (cardId) => {
@@ -98,9 +86,6 @@ export const addLikeRequest = (cardId) => {
     .then((result) => {
       return result;
     })
-    .catch((err) => {
-      console.log(err);
-    });
 };
 
 export const deleteLikeRequest = (cardId) => {
@@ -117,9 +102,6 @@ export const deleteLikeRequest = (cardId) => {
     .then((result) => {
       return result;
     })
-    .catch((err) => {
-      console.log(err);
-    });
 };
 
 export const addCardData = (cardName, link) => {
@@ -140,9 +122,6 @@ export const addCardData = (cardName, link) => {
     .then((result) => {
       return result;
     })
-    .catch((err) => {
-      console.log(err);
-    });
 };
 
 export const updateAvatarRequest = (avatarUrl) => {
@@ -162,7 +141,4 @@ export const updateAvatarRequest = (avatarUrl) => {
     .then((result) => {
       return result;
     })
-    .catch((err) => {
-      console.log(err);
-    });
 };

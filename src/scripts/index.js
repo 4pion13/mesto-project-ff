@@ -3,6 +3,7 @@ import {
   openPopup,
   closePopup,
   loadingPopupState,
+  disabledPopupButton,
 } from "./components/modal.js";
 import {
   deleteCard,
@@ -87,12 +88,12 @@ function fillingProfileData(profileData) {
 function closePopupEvent(popup, closeButton) {
   closeButton.addEventListener("click", () => {
     closePopup(popup);
-    clearValidation(popupProfileEditForm, validationConfig);
   });
 }
 // Обработчик открытия модального окна (редактирование профиля) по нажатию на кнопку
 function openProfilePopupEditEvent(popup, openButton) {
   openButton.addEventListener("click", () => {
+    clearValidation(popup, validationConfig);
     openPopup(popup);
     const popupInputTitle = popupProfileEdit.querySelector(
       ".popup__input_type_name"
@@ -118,7 +119,6 @@ function closePopupOnOverlayClick(popup) {
   popup.addEventListener("click", (evt) => {
     if (!popupContent.contains(evt.target)) {
       closePopup(popup);
-      clearValidation(popupProfileEditForm, validationConfig);
     }
   });
 }
@@ -142,19 +142,26 @@ function appendNewCardEvent(popup, form) {
     };
     loadingPopupState(popup, true);
     addCardData(data.name, data.link).then((res) => {
-      getPersonalInformation().then((profileData) => {
-        cardList.prepend(
-          formingCardTemplate(
-            res,
-            openImagePopupEvent,
-            profileData._id,
-            cardConfigRequests
-          )
-        );
-        form.reset();
-        closePopup(popup);
-        loadingPopupState(popup, false);
-      });
+      getPersonalInformation()
+        .then((profileData) => {
+          cardList.prepend(
+            formingCardTemplate(
+              res,
+              openImagePopupEvent,
+              profileData._id,
+              cardConfigRequests
+            )
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          form.reset();
+          loadingPopupState(popup, false);
+          disabledPopupButton(popup, validationConfig);
+          closePopup(popup);
+        });
     });
   });
 }
@@ -164,12 +171,19 @@ function updateAvatarEvent(popup, form) {
     evt.preventDefault();
     const formData = new FormData(form);
     loadingPopupState(popup, true);
-    updateAvatarRequest(formData.get("link")).then((res) => {
-      setProfileImage(res.avatar);
-      form.reset();
-      closePopup(popup);
-      loadingPopupState(popup, false);
-    });
+    updateAvatarRequest(formData.get("link"))
+      .then((res) => {
+        setProfileImage(res.avatar);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        form.reset();
+        loadingPopupState(popup, false);
+        disabledPopupButton(popup, validationConfig);
+        closePopup(popup);
+      });
   });
 }
 
@@ -183,12 +197,18 @@ function changingProfileDataEvent(popup, form) {
       description: formData.get("description"),
     };
     loadingPopupState(popup, true);
-    updateProfileData(data.name, data.description).then((updateData) => {
-      fillingProfileData(updateData);
-      form.reset();
-      closePopup(popup);
-      loadingPopupState(popup, false);
-    });
+    updateProfileData(data.name, data.description)
+      .then((updateData) => {
+        fillingProfileData(updateData);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        form.reset();
+        closePopup(popup);
+        loadingPopupState(popup, false);
+      });
   });
 }
 
