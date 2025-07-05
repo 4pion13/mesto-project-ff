@@ -18,11 +18,7 @@ export function loadingPopupState(popup, state) {
   }
 }
 
-export function disabledPopupButton(popup, validationConfig) {
-  const buttonElement = popup.querySelector(".popup__button");
-  buttonElement.classList.add(validationConfig.inactiveButtonClass);
-  buttonElement.disabled = true;
-}
+
 
 function closePopupOnEscape(evt) {
   if (evt.key === "Escape") {

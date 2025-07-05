@@ -3,14 +3,17 @@ import {
   openPopup,
   closePopup,
   loadingPopupState,
-  disabledPopupButton,
 } from "./components/modal.js";
 import {
   deleteCard,
   addToggleLikeButton,
   formingCardTemplate,
 } from "./components/card.js";
-import { enableValidation, clearValidation } from "./components/validation.js";
+import {
+  enableValidation,
+  clearValidation,
+  disabledPopupButton,
+} from "./components/validation.js";
 import {
   getPersonalInformation,
   getInitialCards,
@@ -153,15 +156,15 @@ function appendNewCardEvent(popup, form) {
                 cardConfigRequests
               )
             );
+            form.reset();
+            disabledPopupButton(popup, validationConfig);
+            closePopup(popup);
           })
           .catch((err) => {
             console.log(err);
           })
           .finally(() => {
-            form.reset();
             loadingPopupState(popup, false);
-            disabledPopupButton(popup, validationConfig);
-            closePopup(popup);
           });
       })
       .catch((err) => {
@@ -178,15 +181,15 @@ function updateAvatarEvent(popup, form) {
     updateAvatarRequest(formData.get("link"))
       .then((res) => {
         setProfileImage(res.avatar);
+        form.reset();
+        disabledPopupButton(popup, validationConfig);
+        closePopup(popup);
       })
       .catch((err) => {
         console.log(err);
       })
       .finally(() => {
-        form.reset();
         loadingPopupState(popup, false);
-        disabledPopupButton(popup, validationConfig);
-        closePopup(popup);
       });
   });
 }
@@ -204,13 +207,13 @@ function changingProfileDataEvent(popup, form) {
     updateProfileData(data.name, data.description)
       .then((updateData) => {
         fillingProfileData(updateData);
+        form.reset();
+        closePopup(popup);
       })
       .catch((err) => {
         console.log(err);
       })
       .finally(() => {
-        form.reset();
-        closePopup(popup);
         loadingPopupState(popup, false);
       });
   });
